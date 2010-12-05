@@ -3,6 +3,13 @@ What
 
 Processes which record all messages they receive
 
+Currently available in two flavours:
+
+  * mock process / test double: records any received messages but takes no action
+  * passthrough spy: forms a wrapper around another process and upon receiving a message will record it then forward to the wrapped process.
+
+For example usage see the inline EUnit tests.
+
 Why
 ===
 
