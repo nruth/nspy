@@ -35,7 +35,7 @@ assert_message_received(Spy, Expected) ->
       ?assert(MessageFound)
   end.
 
-mock_spy_message_received_test() ->
+assert_message_received_success_test() ->
   Spy = nspy:mock(),
   Spy ! hi,
   Spy ! ho,
@@ -43,7 +43,7 @@ mock_spy_message_received_test() ->
   assert_message_received(Spy, hi),
   assert_message_received(Spy, ho).
 
-mock_spy__message_not_received_test() ->
+assert_message_received_failure_test() ->
   Spy = nspy:mock(),
   Spy ! hi,
   timer:sleep(200),
