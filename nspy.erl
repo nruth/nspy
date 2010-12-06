@@ -40,25 +40,6 @@ get_messages_from_spy(Spy) ->
     ?assertEqual(get_messages_from_spy(Spy), [a_message]). %or timeout failure
 
 
-% CORE
-% ====
-
-spy (Messages, RelayMessagesTo) ->
-  receive
-    {nspy_list_messages, ReplyTo}  -> 
-      ReplyTo ! {nspy_messages, Messages},
-      ?debugFmt("Node ~p requested message received list, sending: ~p~n", [ReplyTo, Messages]),
-      spy(Messages, RelayMessagesTo);
-    Message -> 
-      ?debugFmt("Spy ~p received message: ~p~n", [self(), Message]),
-      BroadcastMessage = fun(Receiver) -> Receiver ! Message end,
-      lists:map(BroadcastMessage, RelayMessagesTo),
-      spy([Message | Messages], RelayMessagesTo)
-  end.
-
-
-
-
 
 % ASSERTS
 % =======
@@ -85,3 +66,19 @@ assert_message_received(Spy, Expected) ->
 
 
 
+
+% CORE
+% ====
+
+spy (Messages, RelayMessagesTo) ->
+  receive
+    {nspy_list_messages, ReplyTo}  -> 
+      ReplyTo ! {nspy_messages, Messages},
+      ?debugFmt("Node ~p requested received messages, sending: ~p~n", [ReplyTo, Messages]),
+      spy(Messages, RelayMessagesTo);
+    Message -> 
+      ?debugFmt("Spy ~p received message: ~p~n", [self(), Message]),
+      BroadcastMessage = fun(Receiver) -> Receiver ! Message end,
+      lists:map(BroadcastMessage, RelayMessagesTo),
+      spy([Message | Messages], RelayMessagesTo)
+  end.
