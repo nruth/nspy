@@ -74,7 +74,8 @@ assert_message_not_received(Spy, Message) ->
     Spy = nspy:mock(),
     Spy ! hi,
     ?assertError({assertEqual_failed, _}, assert_message_not_received(Spy, hi)).
-    
+
+
 
 assert_message_received_n_times(Spy, Expected, NTimes) ->
   Messages = get_messages_from_spy(Spy),
