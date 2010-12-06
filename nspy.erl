@@ -66,6 +66,44 @@ assert_message_received(Spy, Expected) ->
 
 
 
+assert_message_not_received(Spy, Message) ->
+  assert_message_received_n_times(Spy, Message, 0).
+
+  assert_message_not_received_success_test() -> assert_message_not_received(nspy:mock(), hi).
+  assert_message_not_received_failure_test() ->
+    Spy = nspy:mock(),
+    Spy ! hi,
+    ?assertError({assertEqual_failed, _}, assert_message_not_received(Spy, hi)).
+    
+
+assert_message_received_n_times(Spy, Expected, NTimes) ->
+  Messages = get_messages_from_spy(Spy),
+  FilteredMessages = [M || M <- Messages, M == Expected],
+  io:format("~n[SPY] expected ~p ~p times, received ~p~n", [Expected, NTimes, FilteredMessages]),
+  ?debugFmt("Filtering messages matching ~p from ~p, found ~p~n",[Expected, Messages, FilteredMessages]),
+  ?assertEqual(NTimes, length(FilteredMessages)).
+
+  assert_message_received_n_times_failure_test() ->
+    Spy = nspy:mock(),
+    ?assertError({assertEqual_failed, _}, assert_message_received_n_times(Spy, hi, 1)).
+
+  assert_message_received_n_times_success_test() ->
+    Spy = nspy:mock(),
+    Spy ! hi,
+    assert_message_received_n_times(Spy, hi, 1),
+    Spy ! hi,
+    assert_message_received_n_times(Spy, hi, 2).
+
+  assert_message_received_n_times_ignores_other_messages_test() ->
+    Spy = nspy:mock(),
+    Spy ! hi,
+    assert_message_received_n_times(Spy, hi, 1),
+    assert_message_received_n_times(Spy, ho, 0),
+    Spy ! ho,
+    assert_message_received_n_times(Spy, ho, 1),
+    assert_message_received_n_times(Spy, hi, 1).
+
+
 
 % CORE
 % ====
