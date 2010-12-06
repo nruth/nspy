@@ -27,13 +27,15 @@ spy (Messages, RelayMessagesTo) ->
   end.
 
 assert_message_received(Spy, Expected) ->
+  Messages = get_messages_from_spy(Spy),
+  io:format("~n[SPY] expected ~p received ~p~n", [Expected, Messages]),
+  MessageFound = lists:any(fun(Elem) -> Elem =:= Expected end, Messages),
+  ?assert(MessageFound).
+
+get_messages_from_spy(Spy) ->
   Spy ! {nspy_list_messages, self()},
-  receive
-    {nspy_messages, Messages} -> 
-      io:format("~n[SPY] expected ~p received ~p~n", [Expected, Messages]),
-      MessageFound = lists:any(fun(Elem) -> Elem =:= Expected end, Messages),
-      ?assert(MessageFound)
-  end.
+  receive {nspy_messages, Messages} -> Messages end.
+
 
 assert_message_received_success_test() ->
   Spy = nspy:mock(),
