@@ -80,7 +80,7 @@ assert_message_not_received(Spy, Message) ->
 assert_message_received_n_times(Spy, Expected, NTimes) ->
   Messages = get_messages_from_spy(Spy),
   FilteredMessages = [M || M <- Messages, M == Expected],
-  io:format("~n[SPY] expected ~p ~p times, received ~p~n", [Expected, NTimes, FilteredMessages]),
+  io:format("~n[SPY] expected ~p ~p times in received messages:~p,~nfound matches: ~p ~n", [Expected, NTimes, Messages, FilteredMessages]),
   ?debugFmt("Filtering messages matching ~p from ~p, found ~p~n",[Expected, Messages, FilteredMessages]),
   ?assertEqual(NTimes, length(FilteredMessages)).
 
