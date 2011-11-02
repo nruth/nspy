@@ -15,11 +15,11 @@ mock() -> new([]).
 wrapper(Target) -> new([Target]).
 
   passthrough_wrapper_spy_test() ->
-    StuntDouble = nspy:mock(),
-    PassthroughSpy = nspy:wrapper(StuntDouble),
+    ProcUnderTest = nspy:mock(),
+    PassthroughSpy = nspy:wrapper(ProcUnderTest),
     PassthroughSpy ! hi,
     assert_message_received(PassthroughSpy, hi),
-    assert_message_received(StuntDouble, hi).
+    assert_message_received(ProcUnderTest, hi).
 
 
 
