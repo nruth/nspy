@@ -1,12 +1,12 @@
 {application, nspy,
  [
-  {description, ""},
-  {vsn, "1"},
+  {description, "Testing framework to spy on processes"},
+  {vsn, "0.2"},
   {registered, []},
   {applications, [
                   kernel,
                   stdlib
                  ]},
-  {mod, { nspy_app, []}},
+  {modules, []},
   {env, []}
  ]}.

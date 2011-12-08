@@ -59,11 +59,6 @@ assert_message_received(Spy, Expected) ->
 assert_message_received_n_times(Spy, Expected, NTimes) ->
     Messages = get_messages_from_spy(Spy),
     FilteredMessages = [M || M <- Messages, M == Expected],
-    %% io:format("~n[SPY] expected ~p ~p times in received messages:"
-    %% 	      "~p,~nfound matches: ~p ~n", 
-    %% 	      [Expected, NTimes, Messages, FilteredMessages]),
-    ?debugFmt("Filtering messages matching ~p from ~p, found ~p~n",
-	      [Expected, Messages, FilteredMessages]),
     ?assertEqual(NTimes, length(FilteredMessages)).
 
 
@@ -79,14 +74,11 @@ spy(Messages, RelayMessagesTo, MessageHandlers) ->
 	    spy(Messages, RelayMessagesTo, [Handler|MessageHandlers]);
 	{nspy_list_messages, ReplyTo}  -> 
 	    ReplyTo ! {nspy_messages, Messages},
-	    ?debugFmt("Node ~p requested received messages, sending: ~p~n",
-		      [ReplyTo, Messages]),
 	    spy(Messages, RelayMessagesTo, MessageHandlers);
 	{'DOWN', _Ref, process, _Object, _Info} ->
 	    spy(Messages, RelayMessagesTo, MessageHandlers);
 	Message -> 
 	    %% Check if match for handler
-	    ?debugFmt("Spy ~p received message: ~p~n", [self(), Message]),
 	    BroadcastMessage = fun(Receiver) -> Receiver ! Message end,
 	    lists:map(BroadcastMessage, RelayMessagesTo),
 	    spy([Message | Messages], RelayMessagesTo, MessageHandlers)
