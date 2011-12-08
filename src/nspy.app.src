@@ -1,0 +1,12 @@
+{application, nspy,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { nspy_app, []}},
+  {env, []}
+ ]}.
